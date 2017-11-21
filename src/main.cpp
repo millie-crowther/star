@@ -1,8 +1,14 @@
 #include <iostream>
 #include "engine.h"
 #include <SFML/Graphics.hpp>
+#include <glm/glm.hpp>
+#include "glm/gtc/matrix_transform.hpp"
 
 int main(){
+  glm::mat4 myMatrix = glm::translate(glm::mat4(), glm::vec3(10.0f, 0.0f, 0.0f));
+  glm::vec4 myVector(10.0f, 10.0f, 10.0f, 0.0f);
+  glm::vec4 transformedVector = myMatrix * myVector; // guess the result
+
   engine_t engine;
   engine.run();
 
