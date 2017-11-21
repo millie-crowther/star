@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
+set (CMAKE_CXX_STANDARD 11)
 project (star)
 
 set(INCLUDE_DIR
@@ -12,6 +13,11 @@ set(SOURCES
 
   ../include/engine.h
   ../src/engine.cpp
+
+  ../include/rendering/render_octree.h
+  ../src/rendering/render_octree.cpp
+
+  ../include/rendering/material.h
 )
 
 add_executable(star ${SOURCES})
