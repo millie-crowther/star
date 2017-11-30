@@ -1,9 +1,16 @@
 #include "engine.h"
-#include <glm/glm.hpp>
-#include <GLFW/glfw3.h>
+#include <iostream>
 
 int main(){
     engine_t engine;
+    
+    if (!engine.initialise()){
+        std::cout << "Engine failed to initialise. Aborting." << std::endl;
+        return 1;
+    }
+
     engine.run();
+
+    engine.terminate();
     return 0;
 }
