@@ -6,24 +6,25 @@ set(PATH_TO_GLFW /home/millie/glfw)
 
 add_subdirectory(${PATH_TO_GLFW} "${PATH_TO_GLFW}/build")
 
-
 set(INCLUDE_DIR
-  ../include
-  gladbuild/include
+    ../include
+    gladbuild/include
 )
 
 include_directories(${INCLUDE_DIR})
 
 set(SOURCES
-  ../src/main.cpp
+    ../src/main.cpp
 
-  ../include/engine.h
-  ../src/engine.cpp
+    ../include/engine.h
+    ../src/engine.cpp
 
-  ../include/rendering/render_octree.h
-  ../src/rendering/render_octree.cpp
+    ../include/rendering/render_octree.h
+    ../src/rendering/render_octree.cpp
 
-  ../include/rendering/material.h
+    ../include/rendering/material.h
+
+    gladbuild/src/glad.c 
 )
 
 find_package(OpenGL REQUIRED)
