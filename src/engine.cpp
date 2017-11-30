@@ -1,8 +1,8 @@
 #include "engine.h"
 #include <iostream>
-#include <glad/glad.h>
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+static void 
+key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
@@ -24,11 +24,6 @@ engine_t::initialise(){
     glfwMakeContextCurrent(window);
 
     glfwSetKeyCallback(window, key_callback);
-    
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)){
-        std::cout << "Failed to initialize OpenGL context" << std::endl;
-        return false;
-    }
 
     return true;
 }

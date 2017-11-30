@@ -15,3 +15,17 @@ echo "| Installing xorg |"
 echo "+-----------------+"
 sudo apt-get install xorg
 echo ""
+
+echo "+-------------------+"
+echo "| Installing python |"
+echo "+-------------------+"
+sudo apt-get install python
+echo ""
+
+echo "+-----------------+"
+echo "| Installing glad |"
+echo "+-----------------+"
+sudo -H pip install glad
+cd build
+python -m glad --generator c --no-loader --out-path gladbuild 
+cd .. 

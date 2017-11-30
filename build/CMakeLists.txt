@@ -9,6 +9,7 @@ add_subdirectory(${PATH_TO_GLFW} "${PATH_TO_GLFW}/build")
 
 set(INCLUDE_DIR
   ../include
+  gladbuild/include
 )
 
 include_directories(${INCLUDE_DIR})
