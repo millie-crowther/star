@@ -24,6 +24,9 @@ set(SOURCES
 
     ../include/rendering/material.h
 
+    ../include/utils/resources.h
+    ../src/utils/resources.cpp
+
     gladbuild/src/glad.c 
 )
 

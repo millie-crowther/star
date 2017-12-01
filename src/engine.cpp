@@ -3,33 +3,10 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-static const struct
-{
-    float x, y;
-    float r, g, b;
-} vertices[3] =
-{
-    { -0.6f, -0.4f, 1.f, 0.f, 0.f },
-    {  0.6f, -0.4f, 0.f, 1.f, 0.f },
-    {   0.f,  0.6f, 0.f, 0.f, 1.f }
-};
-
-static const char* vertex_shader_text =
-"uniform mat4 MVP;\n"
-"attribute vec3 vCol;\n"
-"attribute vec2 vPos;\n"
-"varying vec3 color;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
-"    color = vCol;\n"
-"}\n";
-
 static const char* fragment_shader_text =
-"varying vec3 color;\n"
 "void main()\n"
 "{\n"
-"    gl_FragColor = vec4(color, 1.0);\n"
+"    gl_FragColor = vec4(0.9, 0.4, 0.8, 1.0);\n"
 "}\n";
 
 static void 
@@ -39,8 +16,27 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
     }
 }
 
+std::string
+engine_t::get_fragment_shader(){
+    return std::string(fragment_shader_text);
+}
+
 bool 
 engine_t::initialise(){
+    const struct
+    {
+        float x, y;
+    } vertices[6]{
+        { -1.0f, -1.0f },
+        {  1.0f, -1.0f },
+        { -1.0f,  1.0f },
+        { -1.0f,  1.0f },
+        {  1.0f,  1.0f },
+        {  1.0f, -1.0f }
+    };
+
+    const char * vertex_shader_text = "attribute vec2 p; void main(){gl_Position=vec4(p,0,1);}";
+
     if (!glfwInit()){
         std::cout << "Failed to initialise GLFW" << std::endl;
         return false;
@@ -52,36 +48,40 @@ engine_t::initialise(){
         glfwTerminate();
         return false;
     }
+
     glfwMakeContextCurrent(window);
-
     glfwSetKeyCallback(window, key_callback);
-    
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-
-
     glfwSwapInterval(1);
+
+    //set up vertex buffer
+    GLuint vertex_buffer;
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+
+    //compile vertex shader
+    GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
     glCompileShader(vertex_shader);
-    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
+
+    //compile fragment shader
+    std::string shaderstr = get_fragment_shader();
+    const char * shader = shaderstr.c_str();
+    GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader, 1, &shader, NULL);
     glCompileShader(fragment_shader);
+
+    //create and link program
     program = glCreateProgram();
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
     glLinkProgram(program);
-    mvp_location = glGetUniformLocation(program, "MVP");
-    vpos_location = glGetAttribLocation(program, "vPos");
-    vcol_location = glGetAttribLocation(program, "vCol");
+
+    //set vertex attributes
+    GLint vpos_location = glGetAttribLocation(program, "p");
     glEnableVertexAttribArray(vpos_location);
-    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
-                          sizeof(float) * 5, (void*) 0);
-    glEnableVertexAttribArray(vcol_location);
-    glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE,
-                          sizeof(float) * 5, (void*) (sizeof(float) * 2));
+    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*) 0);
 
     return true;
 }
@@ -94,7 +94,6 @@ engine_t::terminate(){
 
 void
 engine_t::draw(){
-    glClearColor(0.8f, 0.3f, 0.7f, 1.0f);
     float ratio;
     int width, height;
     
@@ -103,16 +102,8 @@ engine_t::draw(){
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT);
     
-    glm::mat4 m(1.0f);
-    m = glm::rotate(m, (float) glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    glm::mat4 p = glm::ortho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-    
-    glm::mat4 mvp = p * m;
-
     glUseProgram(program);
-    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp[0][0]);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void

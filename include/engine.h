@@ -3,12 +3,14 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <string>
 
 class engine_t {
 private:
-    GLuint vertex_buffer, vertex_shader, fragment_shader, program;
-    GLint mvp_location, vpos_location, vcol_location;
+    GLuint program;
     GLFWwindow * window;
+   
+    std::string get_fragment_shader();
 
     void draw();
     void update(double delta);
