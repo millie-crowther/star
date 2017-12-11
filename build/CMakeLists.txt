@@ -4,7 +4,7 @@ project (star)
 
 set(PATH_TO_GLFW /home/millie/glfw)
 
-add_subdirectory(${PATH_TO_GLFW} "${PATH_TO_GLFW}/build")
+add_subdirectory("glfw")
 
 set(INCLUDE_DIR
     ../include
