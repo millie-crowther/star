@@ -4,11 +4,26 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "utils/resources.h"
 
+static engine_t * INSTANCE = nullptr;
+
 static void 
-key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+key_callback(GLFWwindow * window, int key, int scancode, int action, int mods){
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
+}
+
+static void
+window_size_callback(GLFWwindow * window, int width, int height){
+    INSTANCE->update_window_size(width, height);
+}
+
+void
+engine_t::update_window_size(int width, int height){
+    GLint loc = glGetUniformLocation(program, "window_size");
+    if (loc != -1){
+        glUniform2f(loc, (GLfloat) width, (GLfloat) height);
+    } 
 }
 
 std::string
@@ -18,6 +33,8 @@ engine_t::get_fragment_shader(){
 
 bool 
 engine_t::initialise(){
+    INSTANCE = this;
+
     const struct
     {
         float x, y;
@@ -37,7 +54,10 @@ engine_t::initialise(){
         return false;
     }
 
-    window = glfwCreateWindow(640, 480, "hello world!", nullptr, nullptr);
+    int window_width = 320;
+    int window_height = 240;
+
+    window = glfwCreateWindow(window_width, window_height, "hello world!", nullptr, nullptr);
     if (window == nullptr){
         std::cout << "Failed to create glfw window" << std::endl;
         glfwTerminate();
@@ -46,6 +66,7 @@ engine_t::initialise(){
 
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
+    glfwSetWindowSizeCallback(window, window_size_callback);
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     glfwSwapInterval(1);
 
@@ -96,6 +117,13 @@ engine_t::initialise(){
     glEnableVertexAttribArray(vpos_location);
     glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*) 0);
 
+    //set uniform on shader
+    glUseProgram(program);
+    GLint loc = glGetUniformLocation(program, "window_size");
+    if (loc != -1){
+        glUniform2f(loc, (GLfloat) window_width, (GLfloat) window_height);
+    }
+
     return true;
 }
 
@@ -107,13 +135,9 @@ engine_t::terminate(){
 
 void
 engine_t::draw(){
-    float ratio;
     int width, height;
-    
     glfwGetFramebufferSize(window, &width, &height);
-    ratio = width / (float) height;
     glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT);
     
     glUseProgram(program);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -121,13 +145,6 @@ engine_t::draw(){
 
 void
 engine_t::update(double delta){
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    GLint loc = glGetUniformLocation(program, "window_size");
-    if (loc != -1){
-        glUniform2f(loc, (GLfloat) width, (GLfloat) height);
-    }
-
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
@@ -136,7 +153,14 @@ void
 engine_t::run(){
     double time = glfwGetTime();
     while (!glfwWindowShouldClose(window)){
-        update(1.0);
-        draw();
+        double delta =  glfwGetTime() - time;
+	time = glfwGetTime();
+        
+        double fps = 1.0 / delta;
+	std::string title = "FPS: " + std::to_string(fps);
+	glfwSetWindowTitle(window, title.c_str());
+
+	update(delta);
+	draw();
     }
 }

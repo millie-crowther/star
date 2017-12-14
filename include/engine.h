@@ -19,6 +19,8 @@ public:
     bool initialise();
     void run();
     void terminate();
+
+    void update_window_size(int width, int height);
 };
 
 #endif
