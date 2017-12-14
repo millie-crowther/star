@@ -39,6 +39,7 @@ else
     python -m glad --generator c --no-loader --out-path gladbuild 
 fi
 cd ..
+echo ""
 
 echo "+----------------+"
 echo "| Installing X11 |"
@@ -55,3 +56,4 @@ if cd build/glfw; then
 else
     git clone https://github.com/glfw/glfw.git
 fi
+echo ""

@@ -2,12 +2,7 @@
 #include <iostream>
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-
-static const char* fragment_shader_text =
-"void main()\n"
-"{\n"
-"    gl_FragColor = vec4(0.9, 0.4, 0.8, 1.0);\n"
-"}\n";
+#include "utils/resources.h"
 
 static void 
 key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -18,7 +13,7 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
 std::string
 engine_t::get_fragment_shader(){
-    return std::string(fragment_shader_text);
+    return resources::readTextFile("Shaders/fragment_shader.glsl");    
 }
 
 bool 
@@ -72,6 +67,24 @@ engine_t::initialise(){
     glShaderSource(fragment_shader, 1, &shader, NULL);
     glCompileShader(fragment_shader);
 
+    GLint isCompiled = 0;
+    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &isCompiled);
+    if(isCompiled == GL_FALSE){
+	GLint maxLength = 0;
+	glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &maxLength);
+
+	// The maxLength includes the NULL character
+	char * errorLog = new char[maxLength];
+	glGetShaderInfoLog(fragment_shader, maxLength, &maxLength, errorLog);
+
+	// Exit with failure.
+	glDeleteShader(fragment_shader); // Don't leak the shader.
+	
+        std::cout << "Failed to compile fragment shader" << std::endl;
+        std::cout << errorLog << std::endl;
+        return false;
+    }
+
     //create and link program
     program = glCreateProgram();
     glAttachShader(program, vertex_shader);
@@ -108,6 +121,13 @@ engine_t::draw(){
 
 void
 engine_t::update(double delta){
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    GLint loc = glGetUniformLocation(program, "window_size");
+    if (loc != -1){
+        glUniform2f(loc, (GLfloat) width, (GLfloat) height);
+    }
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
@@ -116,10 +136,7 @@ void
 engine_t::run(){
     double time = glfwGetTime();
     while (!glfwWindowShouldClose(window)){
+        update(1.0);
         draw();
- 
-        double delta = glfwGetTime() - time;
-        update(delta);
-        time = glfwGetTime();
     }
 }
