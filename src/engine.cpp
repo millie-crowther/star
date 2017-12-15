@@ -6,16 +6,15 @@
 
 static engine_t * INSTANCE = nullptr;
 
-static void 
-key_callback(GLFWwindow * window, int key, int scancode, int action, int mods){
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-}
+/*
+ *  static callback functions for GLFW
+ */
 
 static void
 window_size_callback(GLFWwindow * window, int width, int height){
-    INSTANCE->update_window_size(width, height);
+    if (INSTANCE != nullptr){
+    	INSTANCE->update_window_size(width, height);
+    }
 }
 
 void
@@ -64,8 +63,9 @@ engine_t::initialise(){
         return false;
     }
 
+    input = new input_t(window);    
+
     glfwMakeContextCurrent(window);
-    glfwSetKeyCallback(window, key_callback);
     glfwSetWindowSizeCallback(window, window_size_callback);
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     glfwSwapInterval(1);
@@ -120,15 +120,22 @@ engine_t::initialise(){
     //set uniform on shader
     glUseProgram(program);
     GLint loc = glGetUniformLocation(program, "window_size");
-    if (loc != -1){
-        glUniform2f(loc, (GLfloat) window_width, (GLfloat) window_height);
-    }
+    glUniform2f(loc, (GLfloat) window_width, (GLfloat) window_height);
 
+    glm::mat3 identity;
+    loc = glGetUniformLocation(program, "camera_rot");
+    glUniformMatrix3fv(loc, 1, GL_FALSE, &identity[0][0]);
+    
+
+    
     return true;
 }
 
 void
 engine_t::terminate(){
+    delete input;
+    input = nullptr;
+
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -145,6 +152,10 @@ engine_t::draw(){
 
 void
 engine_t::update(double delta){
+    if (input->is_key_pressed(GLFW_KEY_ESCAPE)){ 
+	glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }

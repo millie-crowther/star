@@ -3,12 +3,16 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <string>
+#include "input.h"
 
 class engine_t {
 private:
     GLuint program;
     GLFWwindow * window;
+    
+    input_t * input;
    
     std::string get_fragment_shader();
 

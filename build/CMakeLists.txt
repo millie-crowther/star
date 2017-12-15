@@ -27,6 +27,9 @@ set(SOURCES
     ../include/utils/resources.h
     ../src/utils/resources.cpp
 
+    ../include/input.h
+    ../src/input.cpp
+
     gladbuild/src/glad.c 
 )
 
