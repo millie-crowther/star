@@ -1,5 +1,6 @@
 uniform vec2 window_size;
-uniform mat3 camera_rot;
+uniform vec3 camera_up;
+uniform vec3 camera_right;
 
 float f = 1.0;
 float render_distance = 1000.0;
@@ -22,7 +23,13 @@ float d(vec3 r){
 }
 
 vec3 get_ray(vec2 uv){
-    return camera_rot * normalize(vec3(uv, f));
+    vec3 camera_forward = cross(camera_right, camera_up);
+
+    vec3 result = camera_forward * f;
+    result += camera_up * uv.y;
+    result += camera_right * uv.x;
+
+    return normalize(result);
 }
 
 vec4 sky(vec3 dir){

@@ -10,8 +10,10 @@ private:
 
 public:
     // constructors and destructors
-    input_t(GLFWwindow * window);
+    input_t();
     ~input_t();
+
+    void set_window(GLFWwindow * window);
 
     glm::vec2 get_mouse_pos();
     glm::vec2 get_mouse_velocity();

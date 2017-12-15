@@ -63,7 +63,7 @@ engine_t::initialise(){
         return false;
     }
 
-    input = new input_t(window);    
+    input.set_window(window);    
 
     glfwMakeContextCurrent(window);
     glfwSetWindowSizeCallback(window, window_size_callback);
@@ -122,10 +122,13 @@ engine_t::initialise(){
     GLint loc = glGetUniformLocation(program, "window_size");
     glUniform2f(loc, (GLfloat) window_width, (GLfloat) window_height);
 
-    glm::mat3 identity;
-    loc = glGetUniformLocation(program, "camera_rot");
-    glUniformMatrix3fv(loc, 1, GL_FALSE, &identity[0][0]);
+    glm::vec3 up(0.0, 1.0, 0.0);
+    loc = glGetUniformLocation(program, "camera_up");
+    glUniform3f(loc, up[0], up[1], up[2]);
     
+    glm::vec3 right(1.0, 0.0, 0.0);
+    loc = glGetUniformLocation(program, "camera_right");
+    glUniform3f(loc, right[0], right[1], right[2]);
 
     
     return true;
@@ -133,9 +136,6 @@ engine_t::initialise(){
 
 void
 engine_t::terminate(){
-    delete input;
-    input = nullptr;
-
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -152,12 +152,14 @@ engine_t::draw(){
 
 void
 engine_t::update(double delta){
-    if (input->is_key_pressed(GLFW_KEY_ESCAPE)){ 
+    if (input.is_key_pressed(GLFW_KEY_ESCAPE)){ 
 	glfwSetWindowShouldClose(window, GL_TRUE);
     }
 
-    theta += input->get_mouse_velocity().x / 10000000.0;
-    std::cout << theta << std::endl;
+    theta -= input.get_mouse_velocity().x / 10000000.0;
+    glm::vec3 right(cos(theta), 0.0, sin(theta));
+    GLint loc = glGetUniformLocation(program, "camera_right");
+    glUniform3f(loc, right[0], right[1], right[2]);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

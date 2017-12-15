@@ -14,7 +14,7 @@ private:
 
     double theta;
 
-    input_t * input;
+    input_t input;
    
     std::string get_fragment_shader();
 

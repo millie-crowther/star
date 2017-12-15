@@ -57,13 +57,9 @@ cursor_pos_callback(GLFWwindow * window, double x, double y){
     last_cursor_update[window] = now;
 }
 
-input_t::input_t(GLFWwindow * window){
-    this->window = window;
+input_t::input_t(){
+    this->window = nullptr;
     last_cursor_update[window] = glfwGetTime();
-
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
-    glfwSetCursorPosCallback(window, cursor_pos_callback);
 }
 
 input_t::~input_t(){
@@ -82,18 +78,36 @@ input_t::~input_t(){
     last_cursor_update.erase(window);
 }
 
+void
+input_t::set_window(GLFWwindow * window){
+    this->window = window;
+    glfwSetKeyCallback(window, key_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetCursorPosCallback(window, cursor_pos_callback);
+}
+
 glm::vec2
 input_t::get_mouse_pos(){
+    if (window == nullptr){
+        return glm::vec2();
+    }
     return glm::vec2(cursor_x[window], cursor_y[window]);
 }
 
 glm::vec2
 input_t::get_mouse_velocity(){
+    if (window == nullptr){
+        return glm::vec2(0.0);
+    }
     return glm::vec2(cursor_dx[window], cursor_dy[window]);
 }
 
 bool
 input_t::is_key_pressed(int keycode){
+    if (window == nullptr){
+        return false;
+    }
+
     if (keycode < 0 || keycode > GLFW_KEY_LAST){
 	return false;
     }
