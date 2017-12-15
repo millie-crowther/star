@@ -156,6 +156,9 @@ engine_t::update(double delta){
 	glfwSetWindowShouldClose(window, GL_TRUE);
     }
 
+    theta += input->get_mouse_velocity().x / 10000000.0;
+    std::cout << theta << std::endl;
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }

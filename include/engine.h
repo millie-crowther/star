@@ -11,7 +11,9 @@ class engine_t {
 private:
     GLuint program;
     GLFWwindow * window;
-    
+
+    double theta;
+
     input_t * input;
    
     std::string get_fragment_shader();
