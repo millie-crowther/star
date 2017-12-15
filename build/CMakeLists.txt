@@ -30,6 +30,9 @@ set(SOURCES
     ../include/input.h
     ../src/input.cpp
 
+    ../include/scene/transform.h
+    ../src/scene/transform.cpp
+
     gladbuild/src/glad.c 
 )
 
