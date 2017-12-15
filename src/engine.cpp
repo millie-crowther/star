@@ -64,6 +64,7 @@ engine_t::initialise(){
     }
 
     input.set_window(window);    
+    renderer.set_window(window);
 
     glfwMakeContextCurrent(window);
     glfwSetWindowSizeCallback(window, window_size_callback);
@@ -142,11 +143,12 @@ engine_t::terminate(){
 
 void
 engine_t::draw(){
+    glUseProgram(program);
+	
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
     
-    glUseProgram(program);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 

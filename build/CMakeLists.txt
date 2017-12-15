@@ -33,6 +33,12 @@ set(SOURCES
     ../include/scene/transform.h
     ../src/scene/transform.cpp
 
+    ../include/rendering/renderer.h
+    ../src/rendering/renderer.cpp
+
+    ../include/rendering/camera.h
+    ../src/rendering/camera.cpp
+
     gladbuild/src/glad.c 
 )
 

@@ -11,10 +11,14 @@ private:
 
 public:
     // constructors and destructors
-    renderer_t(GLFWwindow * window);
+    renderer_t();
 
     // setters
     void set_main_camera(camera_t * camera);
+    void set_window(GLFWwindow * window);
+
+    //public methods
+    void draw();
 };
 
 #endif

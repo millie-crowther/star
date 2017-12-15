@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <string>
 #include "input.h"
+#include "rendering/renderer.h"
 
 class engine_t {
 private:
@@ -15,8 +16,11 @@ private:
     double theta;
 
     input_t input;
-   
+    renderer_t renderer;
+
     std::string get_fragment_shader();
+
+
 
     void draw();
     void update(double delta);

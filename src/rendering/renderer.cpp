@@ -1,11 +1,16 @@
 #include "rendering/renderer.h"
 
-renderer_t::renderer_t(GLFWwindow * window){
+renderer_t::renderer_t(){
     main_camera = nullptr;
-    this->window = window;
+    window = nullptr;
 }
 
 void
-set_main_camera(camera_t * camera){
+renderer_t::set_main_camera(camera_t * camera){
     main_camera = camera; 
+}
+
+void 
+renderer_t::set_window(GLFWwindow * window){
+    this->window = window;
 }
