@@ -25,11 +25,6 @@ engine_t::update_window_size(int width, int height){
     } 
 }
 
-std::string
-engine_t::get_fragment_shader(){
-    return resources::readTextFile("Shaders/fragment_shader.glsl");    
-}
-
 bool 
 engine_t::initialise(){
     INSTANCE = this;
@@ -83,7 +78,7 @@ engine_t::initialise(){
     glCompileShader(vertex_shader);
 
     //compile fragment shader
-    std::string shaderstr = get_fragment_shader();
+    std::string shaderstr = resources::readTextFile("Shaders/fragment_shader.glsl");
     const char * shader = shaderstr.c_str();
     GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_shader, 1, &shader, NULL);
@@ -101,7 +96,7 @@ engine_t::initialise(){
 
 	// Exit with failure.
 	glDeleteShader(fragment_shader); // Don't leak the shader.
-	
+	 
         std::cout << "Failed to compile fragment shader" << std::endl;
         std::cout << errorLog << std::endl;
         return false;

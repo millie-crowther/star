@@ -8,6 +8,7 @@ class renderer_t {
 private:
     camera_t * main_camera;
     GLFWwindow * window;
+    GLint program;
 
 public:
     // constructors and destructors

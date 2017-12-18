@@ -18,10 +18,6 @@ private:
     input_t input;
     renderer_t renderer;
 
-    std::string get_fragment_shader();
-
-
-
     void draw();
     void update(double delta);
 

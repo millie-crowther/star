@@ -25,7 +25,6 @@ set(SOURCES
     ../include/rendering/material.h
 
     ../include/utils/resources.h
-    ../src/utils/resources.cpp
 
     ../include/input.h
     ../src/input.cpp
