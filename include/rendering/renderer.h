@@ -1,9 +1,10 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "rendering/camera.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "rendering/ssbo_data.h"
+#include "rendering/camera.h"
 
 class renderer_t {
 private:
@@ -12,6 +13,9 @@ private:
     GLint program;
     int width;
     int height;
+
+    //private helper methods
+    void update_ssbo_data(ssbo_data_t * data, int n);    
 
 public:
     // constructors and destructors

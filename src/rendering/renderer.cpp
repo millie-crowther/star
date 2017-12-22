@@ -3,6 +3,8 @@
 #include <iostream>
 #include "utils/resources.h"
 
+const int ssbo_buffer_binding = 2;
+
 const struct {
     float x, y;
 } vertices[6]{
@@ -47,6 +49,12 @@ renderer_t::renderer_t(){
     window = nullptr;
 }
 
+void
+renderer_t::update_ssbo_data(ssbo_data_t * data, int n){
+    GLuint ssbo;
+    
+}
+
 bool
 renderer_t::initialise(GLFWwindow * window){
     this->window = window;
@@ -84,6 +92,9 @@ renderer_t::initialise(GLFWwindow * window){
 
         // Exit with failure.
         glDeleteShader(fragment_shader); // Don't leak the shader.
+
+        std::cout << "Error compiling fragment shader: " << std::endl;
+        std::cout << errorLog << std::endl;
      
         return false;
     }

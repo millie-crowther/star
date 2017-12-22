@@ -2,6 +2,19 @@ uniform vec2 window_size;
 uniform vec3 camera_up;
 uniform vec3 camera_right;
 
+/*
+layout(std430, binding = 2) buffer {
+    vec3 colour;
+    float albedo;
+} materials;
+*/
+/*
+layout(std430, binding = 3) buffer layoutName
+{
+    int data_SSBO[];
+};
+*/
+
 float f = 1.0;
 float render_distance = 1000.0;
 
