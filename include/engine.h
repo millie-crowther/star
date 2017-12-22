@@ -10,7 +10,6 @@
 
 class engine_t {
 private:
-    GLuint program;
     GLFWwindow * window;
 
     double theta;
@@ -18,15 +17,12 @@ private:
     input_t input;
     renderer_t renderer;
 
-    void draw();
     void update(double delta);
 
 public:
     bool initialise();
     void run();
     void terminate();
-
-    void update_window_size(int width, int height);
 };
 
 #endif

@@ -6,7 +6,7 @@
 #include <sstream>
 
 namespace resources {
-    std::string
+    inline std::string
     readTextFile(std::string path){
 	std::string filename = "../Resources/" + path;
         std::ifstream file(filename.c_str());
