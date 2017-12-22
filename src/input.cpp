@@ -1,20 +1,9 @@
 #include "input.h"
 
-#include <set>
 #include <map>
 #include <iostream>
 
-// TODO: is there really no nicer way to do this???
-// TODO: check for concurrency issues when deleting from a collection
-//       while another thread is iterating over it
-// data has to be stored with respect to GLFWwindows because C is shit
-std::set<GLFWwindow *> keys[GLFW_KEY_LAST + 1];
-std::set<GLFWwindow *> mouse_buttons[GLFW_MOUSE_BUTTON_LAST + 1];
-std::map<GLFWwindow *, double> cursor_x;
-std::map<GLFWwindow *, double> cursor_y;
-std::map<GLFWwindow *, double> cursor_dx;
-std::map<GLFWwindow *, double> cursor_dy;
-std::map<GLFWwindow *, double> last_cursor_update;
+std::map<GLFWwindow *, input_t *> inputs;
 
 /*
  *  callbacks
@@ -22,68 +11,95 @@ std::map<GLFWwindow *, double> last_cursor_update;
 
 static void
 key_callback(GLFWwindow * window, int key, int scancode, int action, int mods){
-    if (key >= 0 && key <= GLFW_KEY_LAST){   
-       	if (action == GLFW_PRESS){
-            keys[key].insert(window);
-        }
-
-        if (action == GLFW_RELEASE){
-            keys[key].erase(window);
-        }
-    }
+    if (inputs.find(window) != inputs.end()){
+       if (action == GLFW_PRESS || action == GLFW_RELEASE){ 
+           inputs[window]->key_event(key, action == GLFW_PRESS);
+       }
+    }    
 }
 
 static void
 mouse_button_callback(GLFWwindow * window, int button, int action, int mods){
-   if (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST){
-       if (action == GLFW_PRESS){
-          mouse_buttons[button].insert(window);
-       }
-
-       if (action == GLFW_RELEASE){
-           mouse_buttons[button].erase(window);
-       }
-   }
+    if (inputs.find(window) != inputs.end()){
+        if (action == GLFW_PRESS || action == GLFW_RELEASE){
+            inputs[window]->mouse_button_event(button, action == GLFW_PRESS);
+        }
+    }
 }
 
 static void 
 cursor_pos_callback(GLFWwindow * window, double x, double y){
-    double now = glfwGetTime();
+    if (inputs.find(window) != inputs.end()){
+        inputs[window]->mouse_pos_update(x, y);
+    }
+}
 
-    cursor_dx[window] = (x - cursor_x[window]) / (now - last_cursor_update[window]);  
-    cursor_dy[window] = (y - cursor_y[window]) / (now - last_cursor_update[window]);
-    cursor_x[window] = x;
-    cursor_y[window] = y;
-    last_cursor_update[window] = now;
+bool
+input_t::is_valid_key(int keycode){
+    return keycode >= 0 && keycode <= GLFW_KEY_LAST;
+}
+
+bool
+input_t::is_valid_mouse_button(int button){
+    return button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST;
 }
 
 input_t::input_t(){
     this->window = nullptr;
-    last_cursor_update[window] = glfwGetTime();
+
+    for (int key = 0; is_valid_key(key); key++){
+        keys[key] = false;
+    }
+
+    for (int button = 0; is_valid_mouse_button(button); button++){
+        mouse[button] = false;
+    }
 }
 
 input_t::~input_t(){
-    for (int key = 0; key <= GLFW_KEY_LAST; key++){
-	keys[key].erase(window);
+    for (auto it = inputs.begin(); it != inputs.end();){
+        if ((it->second) == this){
+            it = inputs.erase(it);
+        } else {
+            it++;
+        }
     }
-
-    for (int btn = 0; btn <= GLFW_MOUSE_BUTTON_LAST; btn++){
-        mouse_buttons[btn].erase(window);
-    }
-
-    cursor_x.erase(window);
-    cursor_y.erase(window);
-    cursor_dx.erase(window);
-    cursor_dy.erase(window);
-    last_cursor_update.erase(window);
 }
 
 void
 input_t::set_window(GLFWwindow * window){
     this->window = window;
+    
     glfwSetKeyCallback(window, key_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetCursorPosCallback(window, cursor_pos_callback);
+    
+    inputs[window] = this;
+}
+
+void
+input_t::key_event(int keycode, bool isPress){
+    if (is_valid_key(keycode)){
+        keys[keycode] = isPress;
+    }
+}
+
+void
+input_t::mouse_button_event(int button, bool isPress){
+    if (is_valid_mouse_button(button)){
+        mouse[button] = isPress;
+    }
+}
+
+void 
+input_t::mouse_pos_update(double x, double y){
+    double now = glfwGetTime();
+    glm::vec2 new_pos(x, y);
+    
+    mouse_v = (new_pos - mouse_p) / (float)(now - last_mouse_update);
+    mouse_p = new_pos;
+
+    last_mouse_update = now;
 }
 
 glm::vec2
@@ -91,7 +107,8 @@ input_t::get_mouse_pos(){
     if (window == nullptr){
         return glm::vec2();
     }
-    return glm::vec2(cursor_x[window], cursor_y[window]);
+    
+    return mouse_p;
 }
 
 glm::vec2
@@ -99,20 +116,24 @@ input_t::get_mouse_velocity(){
     if (window == nullptr){
         return glm::vec2(0.0);
     }
-    return glm::vec2(cursor_dx[window], cursor_dy[window]);
+
+    return mouse_v;
 }
 
 bool
 input_t::is_key_pressed(int keycode){
-    if (window == nullptr){
-        return false;
-    }
-
-    if (keycode < 0 || keycode > GLFW_KEY_LAST){
+    if (window == nullptr || !is_valid_key(keycode)){
 	return false;
     }
 
-    return keys[keycode].find(window) != keys[keycode].end();
+    return keys[keycode];
 }
 
-
+bool 
+input_t::is_mouse_button_pressed(int button){
+   if (window == nullptr || !is_valid_mouse_button(button)){
+       return false;
+   }
+   
+   return mouse[button];
+}
