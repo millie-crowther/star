@@ -1,6 +1,7 @@
 #version 430
 
 layout(std430, binding = 0) buffer octree_buffer {
+    int octree_size;
     int octree[];
 };
 
@@ -10,6 +11,7 @@ struct material_t {
 };
 
 layout(std430, binding = 1) buffer material_buffer {
+    int num_materials;
     material_t materials[];
 };
 
