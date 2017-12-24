@@ -3,8 +3,6 @@
 #include <iostream>
 #include "utils/resources.h"
 
-const int ssbo_buffer_binding = 2;
-
 const struct {
     float x, y;
 } vertices[6]{
@@ -47,12 +45,6 @@ renderer_t::renderer_t(){
     INSTANCE = this;
     main_camera = nullptr;
     window = nullptr;
-}
-
-void
-renderer_t::update_ssbo_data(ssbo_data_t * data, int n){
-    GLuint ssbo;
-    
 }
 
 bool

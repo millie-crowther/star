@@ -38,8 +38,6 @@ set(SOURCES
     ../include/rendering/camera.h
     ../src/rendering/camera.cpp
 
-    ../include/rendering/ssbo_data.h
-
     gladbuild/src/glad.c 
 )
 

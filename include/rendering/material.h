@@ -1,10 +1,11 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-class material_t {
-public:
+#include <glm/glm.hpp>
 
-private:
+struct  material_t {
+    glm::vec3 colour;
+    float albedo;
 };
 
 #endif
