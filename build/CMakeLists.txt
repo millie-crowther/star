@@ -16,8 +16,8 @@ include_directories(${INCLUDE_DIR})
 set(SOURCES
     ../src/main.cpp
 
-    ../include/engine.h
-    ../src/engine.cpp
+    ../include/core/engine.h
+    ../src/core/engine.cpp
 
     ../include/rendering/render_octree.h
     ../src/rendering/render_octree.cpp
@@ -37,6 +37,8 @@ set(SOURCES
 
     ../include/rendering/camera.h
     ../src/rendering/camera.cpp
+
+    ../include/core/primitive.h
 
     gladbuild/src/glad.c 
 )

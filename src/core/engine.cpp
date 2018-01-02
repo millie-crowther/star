@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "core/engine.h"
 #include <iostream>
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -31,7 +31,7 @@ engine_t::initialise(){
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     glfwSwapInterval(1);
-    
+
     input.set_window(window);    
     
     if (!renderer.initialise(window)){

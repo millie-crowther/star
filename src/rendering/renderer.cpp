@@ -19,9 +19,9 @@ const char * vertex_shader_text = "attribute vec2 p; void main(){gl_Position=vec
 static renderer_t * INSTANCE = nullptr;
 
 /*
- *  static callback functions for GLFW
+ *  static callback function for GLFW
  */
-
+//TODO: refactor
 static void
 window_size_callback(GLFWwindow * window, int width, int height){
     if (INSTANCE != nullptr){
@@ -40,7 +40,6 @@ renderer_t::update_window_size(int width, int height){
     }
 }
 
-
 renderer_t::renderer_t(){
     INSTANCE = this;
     main_camera = nullptr;
@@ -56,6 +55,7 @@ renderer_t::initialise(GLFWwindow * window){
  
     //set up vertex buffer
     GLuint vertex_buffer;
+
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
