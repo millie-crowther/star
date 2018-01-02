@@ -4,8 +4,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "utils/resources.h"
 
+static void
+error_callback(int code, const char * description){
+    std::cout << "GLFW encountered error " << code << ": " << description << std::endl;
+}
+
 bool 
 engine_t::initialise(){
+    glfwSetErrorCallback(error_callback);    
+
     if (!glfwInit()){
         std::cout << "Failed to initialise GLFW" << std::endl;
         return false;
