@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "rendering/camera.h"
+#include "core/bounds.h"
 
 class renderer_t {
 private:
@@ -24,6 +25,7 @@ public:
     bool initialise(GLFWwindow * window);
     void draw();
     void update_window_size(int width, int height);
+    bounds_t get_global_bounds();
 };
 
 #endif

@@ -60,3 +60,21 @@ render_octree_t::flatten(std::vector<int> * structure, std::vector<material_t> *
         flatten_helper(&dummy, structure, materials);
     } 
 }
+
+void
+render_octree_t::paint(bounds_t bounds, primitive_t * primitive){
+    if (is_terminal()){
+        material = primitive->get_material_at(bounds);
+
+    } else if (primitive->surface_intersects(bounds)){
+        for (int i = 0; i < 8; i++){
+            children[i].paint(bounds.bounds_for_octant(i), primitive);
+	}
+    }
+}
+
+bool
+render_octree_t::is_terminal(){
+    //TODO: make more nodes terminal when they're further from the camera
+    return is_leaf();
+}

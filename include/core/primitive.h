@@ -2,6 +2,7 @@
 #define PRIMITIVE_H
 
 #include "bounds.h"
+#include "rendering/material.h"
 
 class primitive_t {
 protected:
@@ -14,7 +15,8 @@ public:
 
     // virtual functions
     virtual glm::vec3 normal(glm::vec3 v);
-    virtual bool intersects(bounds_t bounds);
+    virtual bool surface_intersects(bounds_t bounds);
+    virtual material_t * get_material_at(bounds_t bounds);
 };
 
 #endif

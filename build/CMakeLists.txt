@@ -41,6 +41,7 @@ set(SOURCES
     ../include/core/primitive.h
  
     ../include/core/bounds.h
+    ../src/core/bounds.cpp
 
     gladbuild/src/glad.c 
 )
