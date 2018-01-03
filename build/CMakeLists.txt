@@ -39,6 +39,8 @@ set(SOURCES
     ../src/rendering/camera.cpp
 
     ../include/core/primitive.h
+ 
+    ../include/core/bounds.h
 
     gladbuild/src/glad.c 
 )
