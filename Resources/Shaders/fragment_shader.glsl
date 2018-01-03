@@ -1,19 +1,19 @@
 #version 430
 
-layout(std430, binding = 0) buffer octree_buffer {
-    int octree_size;
-    int octree[];
-};
+//layout(std430, binding = 0) buffer octree_buffer {
+//    int octree_size;
+//    int octree[];
+//};
 
 struct material_t {
     vec3 colour;
     float albedo;
 };
 
-layout(std430, binding = 1) buffer material_buffer {
-    int num_materials;
-    material_t materials[];
-};
+//layout(std430, binding = 1) buffer material_buffer {
+//    int num_materials;
+//    material_t materials[];
+//};
 
 uniform vec2 window_size;
 uniform vec3 camera_up;

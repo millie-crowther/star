@@ -74,20 +74,19 @@ renderer_t::initialise(GLFWwindow * window){
 
     GLint isCompiled = 0;
     glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &isCompiled);
-    if(isCompiled == GL_FALSE){
-        GLint maxLength = 0;
-        glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &maxLength);
+       
+    GLint maxLength = 0;
+    glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &maxLength);
 
-        // The maxLength includes the NULL character
-        char * errorLog = new char[maxLength];
-        glGetShaderInfoLog(fragment_shader, maxLength, &maxLength, errorLog);
+    // The maxLength includes the NULL character
+    char * errorLog = new char[maxLength];
+    glGetShaderInfoLog(fragment_shader, maxLength, &maxLength, errorLog);
 
-        // Exit with failure.
+    std::cout << "output from compiling fragment shader: " << std::endl;
+    std::cout << errorLog << std::endl;
+    
+    if (isCompiled == GL_FALSE){
         glDeleteShader(fragment_shader); // Don't leak the shader.
-
-        std::cout << "Error compiling fragment shader: " << std::endl;
-        std::cout << errorLog << std::endl;
-     
         return false;
     }
 
