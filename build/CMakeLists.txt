@@ -25,6 +25,7 @@ set(SOURCES
     ../include/rendering/material.h
 
     ../include/utils/resources.h
+    ../include/utils/maths.h
 
     ../include/input.h
     ../src/input.cpp
@@ -39,7 +40,8 @@ set(SOURCES
     ../src/rendering/camera.cpp
 
     ../include/core/primitive.h
- 
+    ../src/core/primitive.cpp
+
     ../include/core/bounds.h
     ../src/core/bounds.cpp
 

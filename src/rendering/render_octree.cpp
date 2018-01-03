@@ -8,7 +8,7 @@ render_octree_t::render_octree_t(render_octree_t * p, material_t * m){
 
 render_octree_t::~render_octree_t(){
     if (children != nullptr){
-        delete children;
+        delete[] children;
     }
 }
 
@@ -63,12 +63,13 @@ render_octree_t::flatten(std::vector<int> * structure, std::vector<material_t> *
 
 void
 render_octree_t::paint(bounds_t bounds, primitive_t * primitive){
-    if (is_terminal()){
-        material = primitive->get_material_at(bounds);
-
-    } else if (primitive->surface_intersects(bounds)){
-        for (int i = 0; i < 8; i++){
-            children[i].paint(bounds.bounds_for_octant(i), primitive);
+    if (primitive->surface_intersects(bounds)){
+        if (is_terminal()){
+            material = primitive->get_material_at(bounds);   
+	} else {
+	    for (int i = 0; i < 8; i++){
+                children[i].paint(bounds.bounds_for_octant(i), primitive);
+	    }
 	}
     }
 }
