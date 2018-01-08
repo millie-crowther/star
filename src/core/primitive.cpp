@@ -18,6 +18,24 @@ primitive_t::is_on_surface(glm::vec3 v){
     return maths::approx(distance(v), 0.0);
 }
 
+glm::vec3
+primitive_t::normal(glm::vec3 v){
+    //TODO
+    return glm::vec3(1,0,0);
+}
+
+material_t * 
+primitive_t::get_material_at(bounds_t bounds){
+    //TODO
+    return nullptr;
+}
+
+bounds_t 
+primitive_t::get_upper_bound(){
+    //TODO
+    return bounds_t(glm::vec3(0), 1.0);
+}
+
 bool
 primitive_t::surface_intersects(bounds_t bounds){
     // check corners

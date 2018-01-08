@@ -17,3 +17,12 @@ bounds_t::bounds_for_octant(int i){
 
     return bounds_t(c, s); 
 }
+
+std::array<glm::vec3, 8>
+bounds_t::get_corners(){
+    std::array<glm::vec3, 8> result;
+
+    //TODO
+
+    return result;
+}
