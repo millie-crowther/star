@@ -23,6 +23,7 @@ set(SOURCES
     ../src/rendering/render_octree.cpp
 
     ../include/rendering/material.h
+    ../src/rendering/material.cpp
 
     ../include/utils/resources.h
     ../include/utils/maths.h
@@ -41,6 +42,9 @@ set(SOURCES
 
     ../include/core/primitive.h
     ../src/core/primitive.cpp
+
+    ../include/core/primitives.h
+    ../include/core/primitives/sphere.h
 
     ../include/core/bounds.h
     ../src/core/bounds.cpp

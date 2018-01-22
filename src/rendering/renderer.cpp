@@ -131,3 +131,15 @@ renderer_t::draw(){
     glViewport(0, 0, width, height);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
+
+bool
+renderer_t::is_visible(bounds_t bounds){
+    //TODO
+    return true;
+}
+
+bool 
+renderer_t::is_terminal(bounds_t bounds){
+    std::cout << "bounds volume: " << bounds.volume() << std::endl;
+    return bounds.volume() == 1;
+}

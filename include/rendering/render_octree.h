@@ -5,13 +5,12 @@
 #include "core/primitive.h"
 #include "material.h"
 #include <vector>
-#include <array>
 
 class render_octree_t {
 private:
     renderer_t * renderer;
     render_octree_t * parent;
-    std::array<render_octree_t *, 8> children;
+    std::vector<render_octree_t> * children;
     material_t * material;
 
     bool is_root();
@@ -29,7 +28,7 @@ private:
 
 public:
     // constructors and destructors
-    render_octree_t(renderer_t * renderer, render_octree_t * parent, material_t * material);
+    render_octree_t(renderer_t * renderer, render_octree_t * parent);
     ~render_octree_t();
 
     // public methods

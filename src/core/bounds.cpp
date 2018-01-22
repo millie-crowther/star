@@ -1,13 +1,13 @@
 #include "core/bounds.h"
 
-bounds_t::bounds_t(glm::vec3 c, double s){
+bounds_t::bounds_t(glm::vec3 c, int s){
     centre = c;
     size = s;
 }
 
 bounds_t
 bounds_t::bounds_for_octant(int i){
-    double s = size / 2.0f;
+    int s = size / 2;
 
     int dx = (i & 1) * 2 - 1;
     int dy = (i & 2) - 1;
@@ -25,4 +25,9 @@ bounds_t::get_corners(){
     //TODO
 
     return result;
+}
+
+int
+bounds_t::volume(){
+    return size * size * size;
 }

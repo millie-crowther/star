@@ -1,11 +1,10 @@
 #include "core/primitive.h"
 
-#include <algorithm>
-#include "utils/maths.h"
+material_t default_material;
 
 material_t * 
 primitive_t::get_material(){
-    return &material_t::default_material;
+    return &default_material;
 }
 
 bounds_t 
