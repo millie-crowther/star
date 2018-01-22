@@ -5,7 +5,7 @@
 
 material_t * 
 primitive_t::get_material(){
-    return &default_material;
+    return &material_t::default_material;
 }
 
 bounds_t 

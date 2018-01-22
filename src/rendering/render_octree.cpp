@@ -1,5 +1,7 @@
 #include "rendering/render_octree.h"
 
+#include <algorithm>
+
 render_octree_t::render_octree_t(renderer_t * r, render_octree_t * p, material_t * m){
     renderer = r;
     parent   = p;
@@ -18,7 +20,7 @@ render_octree_t::is_root(){
 
 bool
 render_octree_t::is_leaf(){
-    return children == nullptr;
+    return std::all_of(children.begin(), children.end(), [](render_octree_t * t) { return t == nullptr });
 }
 
 int
@@ -68,11 +70,15 @@ render_octree_t::flatten(std::vector<int> * structure, std::vector<material_t> *
 }
 
 void 
+render_octree_t::subdivide(){
+    kill_children();
+    children.fill(new render_octree_t(renderer, this, nullptr));
+}
+
+void 
 render_octree_t::kill_children(){
-    if (children != nullptr){
-        delete[] children;
-        children = nullptr;
-    }
+    std::foreach(children.begin(), children.end(), [](render_octree_t * t){ if (t != nullptr) delete t; });
+    children.fill(nullptr);
 }
 
 void
@@ -100,6 +106,10 @@ render_octree_t::paint(bounds_t bounds, primitive_t * primitive){
             set_material(primitive->get_material());            
  
 	} else {
+            if (is_leaf()){
+                subdivide();          
+            }
+
 	    for (int i = 0; i < 8; i++){
                 children[i].paint(bounds.bounds_for_octant(i), primitive);
 	    }

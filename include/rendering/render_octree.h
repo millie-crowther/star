@@ -5,12 +5,13 @@
 #include "core/primitive.h"
 #include "material.h"
 #include <vector>
+#include <array>
 
 class render_octree_t {
 private:
     renderer_t * renderer;
     render_octree_t * parent;
-    render_octree_t * children;
+    std::array<render_octree_t *, 8> children;
     material_t * material;
 
     bool is_root();
@@ -19,6 +20,7 @@ private:
     void kill_children();
     bool has_homogenous_children();
     void merge_children();
+    void subdivide();
 
     void set_material(material_t * material);
     
