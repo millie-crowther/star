@@ -13,6 +13,7 @@ private:
     GLint program;
     int width;
     int height;
+    bounds_t get_global_bounds();
 
 public:
     // constructors and destructors
@@ -25,7 +26,9 @@ public:
     bool initialise(GLFWwindow * window);
     void draw();
     void update_window_size(int width, int height);
-    bounds_t get_global_bounds();
+
+    bool is_visible(bounds_t bounds);
+    bool is_terminal(bounds_t bounds);
 };
 
 #endif

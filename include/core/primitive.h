@@ -9,21 +9,16 @@
  */ 
 class primitive_t {
 protected:
-    // virtual functions
-    virtual bool is_convex();
-    virtual bool contains(glm::vec3 v);
-    
-    // non-virtual functions
-    bool is_on_surface(glm::vec3 v);
+    // singleton variables
+    static material_t default_material = material_t(glm::vec3(0.7, 0.3, 0.7))
 
 public:
     // abstract functions
     virtual double distance(glm::vec3 v) = 0;
 
     // virtual functions
-    virtual glm::vec3 normal(glm::vec3 v);
     virtual bool surface_intersects(bounds_t bounds);
-    virtual material_t * get_material_at(bounds_t bounds);
+    virtual material_t * get_material();
     virtual bounds_t get_upper_bound();
 };
 

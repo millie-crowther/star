@@ -1,15 +1,19 @@
 #include "rendering/render_octree.h"
 
-render_octree_t::render_octree_t(render_octree_t * p, material_t * m){
+render_octree_t::render_octree_t(renderer_t * r, render_octree_t * p, material_t * m){
+    renderer = r;
     parent   = p;
     children = nullptr;
     material = m;
 }
 
 render_octree_t::~render_octree_t(){
-    if (children != nullptr){
-        delete[] children;
-    }
+    kill_children();
+}
+
+bool
+render_octree_t::is_root(){
+    return parent == nullptr;
 }
 
 bool
@@ -19,7 +23,9 @@ render_octree_t::is_leaf(){
 
 int
 render_octree_t::get_material_id(material_t * material, std::vector<material_t> * materials){
-        
+    // TODO: remove duplicates
+    materials->push_back(material);
+    return materials->size() - 1;        
 }
 
 void 
@@ -61,21 +67,42 @@ render_octree_t::flatten(std::vector<int> * structure, std::vector<material_t> *
     } 
 }
 
+void 
+render_octree_t::kill_children(){
+    if (children != nullptr){
+        delete[] children;
+        children = nullptr;
+    }
+}
+
+void
+render_octree_t::merge_children(){
+    if (!is_leaf() && has_homogenous_children()){
+        material_t * m = children[0].material;
+        kill_children();
+        set_material(m);
+    }
+}
+
+void
+render_octree_t::set_material(material_t * material){
+    this->material = material;
+
+    if (!is_root()){
+        parent->merge_children();
+    }    
+}
+
 void
 render_octree_t::paint(bounds_t bounds, primitive_t * primitive){
-    if (primitive->surface_intersects(bounds)){
-        if (is_terminal()){
-            material = primitive->get_material_at(bounds);   
+    if (renderer->is_visible(bounds) && primitive->surface_intersects(bounds)){
+        if (renderer->is_terminal(bounds)){
+            set_material(primitive->get_material());            
+ 
 	} else {
 	    for (int i = 0; i < 8; i++){
                 children[i].paint(bounds.bounds_for_octant(i), primitive);
 	    }
 	}
     }
-}
-
-bool
-render_octree_t::is_terminal(){
-    //TODO: make more nodes terminal when they're further from the camera
-    return is_leaf();
 }
