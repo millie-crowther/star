@@ -140,6 +140,5 @@ renderer_t::is_visible(bounds_t bounds){
 
 bool 
 renderer_t::is_terminal(bounds_t bounds){
-    std::cout << "bounds volume: " << bounds.volume() << std::endl;
     return bounds.volume() == 1;
 }

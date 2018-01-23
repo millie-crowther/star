@@ -33,8 +33,14 @@ render_octree_t::has_homogenous_children(){
 int
 render_octree_t::get_material_id(material_t * material, std::vector<material_t> * materials){
     // TODO: remove duplicates
-    materials->push_back(*material);
-    return materials->size() - 1;        
+    if (material == nullptr){
+	return 0;
+    }
+
+    if (materials->empty()){
+        materials->push_back(*material);
+    }
+    return 1;
 }
 
 void 
@@ -49,7 +55,7 @@ render_octree_t::flatten_helper(
     if (is_leaf()){
         // set material id
         // negative to distinguish from branch nodes
-        structure->push_back(12);//-get_material_id(material, materials));
+        structure->push_back(-get_material_id(material, materials));
     
     } else {
         // allocate nodes for structure and recurse
@@ -110,13 +116,10 @@ render_octree_t::paint(bounds_t bounds, primitive_t * primitive){
     if (/*renderer->is_visible(bounds) &&*/ primitive->surface_intersects(bounds)){
 
         if (renderer->is_terminal(bounds)){
-            std::cout << "terminal" << std::endl;
             set_material(primitive->get_material());            
  
 	} else {
-	    std::cout << "non terminal, recursing" << std::endl;
             if (is_leaf()){
-		std::cout << "subdividing" << std::endl;
                 subdivide();          
             }
 
