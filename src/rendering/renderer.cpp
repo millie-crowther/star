@@ -117,6 +117,8 @@ renderer_t::initialise(GLFWwindow * window){
 
     glfwSetWindowSizeCallback(window, window_size_callback);
 
+    // create ssbo
+    glGenBuffers(1, &octree_ssbo);
     return true;
 }
 
@@ -141,4 +143,20 @@ renderer_t::is_visible(bounds_t bounds){
 bool 
 renderer_t::is_terminal(bounds_t bounds){
     return bounds.volume() == 1;
+}
+
+void
+renderer_t::upload_octree_data(std::vector<int> * data){
+    data->insert(data->begin(), data->size());
+    
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, octree_ssbo); 
+    glBufferData(
+	GL_SHADER_STORAGE_BUFFER, 
+	sizeof(int) * data->size(), 
+	&(data->at(0)), 
+	GL_DYNAMIC_DRAW
+    );
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, octree_ssbo);
+
+    data->erase(data->begin());
 }

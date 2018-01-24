@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include "rendering/camera.h"
 #include "core/bounds.h"
+#include <vector>
 
 class renderer_t {
 private:
@@ -13,7 +14,10 @@ private:
     GLint program;
     int width;
     int height;
+    GLuint octree_ssbo;
+
     bounds_t get_global_bounds();
+    void upload_octree_data(std::vector<int> * data);
 
 public:
     // constructors and destructors

@@ -113,8 +113,7 @@ render_octree_t::set_material(material_t * material){
 
 void
 render_octree_t::paint(bounds_t bounds, primitive_t * primitive){
-    if (/*renderer->is_visible(bounds) &&*/ primitive->surface_intersects(bounds)){
-
+    if (primitive->surface_intersects(bounds)){
         if (renderer->is_terminal(bounds)){
             set_material(primitive->get_material());            
  
