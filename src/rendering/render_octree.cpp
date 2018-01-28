@@ -30,32 +30,15 @@ render_octree_t::has_homogenous_children(){
     return false;
 }
 
-int
-render_octree_t::get_material_id(material_t * material, std::vector<material_t> * materials){
-    // TODO: remove duplicates
-    if (material == nullptr){
-	return 0;
-    }
-
-    if (materials->empty()){
-        materials->push_back(*material);
-    }
-    return 1;
-}
-
 void 
-render_octree_t::flatten_helper(
-    int * ptr, 
-    std::vector<int> * structure, 
-    std::vector<material_t> * materials
-){
+render_octree_t::flatten_helper(int * ptr, std::vector<int> * structure){
     // go back and set your parents pointer to you
     *ptr = structure->size();
 
     if (is_leaf()){
         // set material id
         // negative to distinguish from branch nodes
-        structure->push_back(-get_material_id(material, materials));
+        structure->push_back(material == nullptr ? 0 : -1);
     
     } else {
         // allocate nodes for structure and recurse
@@ -69,16 +52,16 @@ render_octree_t::flatten_helper(
 
         // recurse
         for (int i = 0; i < 8; i++){
-            children->at(i).flatten_helper(&structure->at(start + i), structure, materials);
+            children->at(i).flatten_helper(&structure->at(start + i), structure);
         }
     }
 }
 
 void
-render_octree_t::flatten(std::vector<int> * structure, std::vector<material_t> * materials){
-    if (structure != nullptr && materials != nullptr){
+render_octree_t::flatten(std::vector<int> * structure){
+    if (structure != nullptr){
         int dummy;
-        flatten_helper(&dummy, structure, materials);
+        flatten_helper(&dummy, structure);
     } 
 }
 

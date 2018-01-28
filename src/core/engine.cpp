@@ -3,6 +3,8 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include "utils/resources.h"
+#include "rendering/render_octree.h"
+#include "core/primitives.h"
 
 static void
 error_callback(int code, const char * description){
@@ -33,7 +35,7 @@ engine_t::initialise(){
     glfwSwapInterval(1);
 
     input.set_window(window);    
-    
+
     if (!renderer.initialise(window)){
         std::cout << "Failed to initialise renderer" << std::endl;
         glfwTerminate();
@@ -61,6 +63,19 @@ engine_t::update(double delta){
 
 void
 engine_t::run(){
+    render_octree_t o(&renderer, nullptr);
+    primitives::sphere_t s;
+    o.paint(bounds_t(glm::vec3(0), 4), &s);
+    std::vector<int> st;
+    o.flatten(&st);
+
+    for (int i : st){
+	std::cout << i << ", ";
+    }
+    std::cout << std::endl;
+    std::cout << "size: " << st.size() << std::endl;
+    renderer.upload_octree_data(&st);
+
     double time = glfwGetTime();
     while (!glfwWindowShouldClose(window)){
         double delta =  glfwGetTime() - time;

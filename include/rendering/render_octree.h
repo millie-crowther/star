@@ -23,8 +23,7 @@ private:
 
     void set_material(material_t * material);
     
-    int get_material_id(material_t * material, std::vector<material_t> * materials);
-    void flatten_helper(int * ptr, std::vector<int> * structure, std::vector<material_t> * mats);
+    void flatten_helper(int * ptr, std::vector<int> * structure);
 
 public:
     // constructors and destructors
@@ -32,7 +31,7 @@ public:
     ~render_octree_t();
 
     // public methods
-    void flatten(std::vector<int> * structure, std::vector<material_t> * materials);
+    void flatten(std::vector<int> * structure);
     void paint(bounds_t bounds, primitive_t * primitive);
 };
 

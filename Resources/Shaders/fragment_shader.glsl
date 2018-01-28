@@ -12,6 +12,33 @@ uniform vec3 camera_right;
 float f = 1.0;
 float render_distance = 1000.0;
 
+struct ray {
+    vec3 v;
+    vec3 d;
+};
+
+struct bound {
+    vec3 c;
+    float s;
+    int mat;
+};
+
+bound node(vec3 v){
+    return bound(vec3(1.0), 1.0, 0);
+}
+
+ray advance(ray r){
+    bound b = node(r.v);
+    if (b.mat == 0){
+        // calculate distance to edge of node
+	
+    } else {
+        // somewhere on surface
+    }
+
+    return r;
+}
+
 bool hit(float d){
     return d < render_distance;
 }

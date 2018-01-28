@@ -17,9 +17,10 @@ private:
     GLuint octree_ssbo;
 
     bounds_t get_global_bounds();
-    void upload_octree_data(std::vector<int> * data);
 
 public:
+    void upload_octree_data(std::vector<int> * data);
+    
     // constructors and destructors
     renderer_t();
 
