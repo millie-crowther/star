@@ -19,9 +19,6 @@ set(SOURCES
     ../include/core/engine.h
     ../src/core/engine.cpp
 
-    ../include/rendering/render_octree.h
-    ../src/rendering/render_octree.cpp
-
     ../include/rendering/material.h
     ../src/rendering/material.cpp
 
