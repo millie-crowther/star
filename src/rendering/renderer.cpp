@@ -40,10 +40,34 @@ renderer_t::update_window_size(int width, int height){
     }
 }
 
+void 
+renderer_t::update_camera_transform(float dx, float dz, float theta){
+    main_camera->position += glm::vec3(dx, 0, dz);
+    glm::vec3 f = main_camera->forward;
+    // TODO: rotate around y axis
+
+    glm::vec3 v = main_camera->position;
+    GLint loc = glGetUniformLocation(program, "camera_position");
+    if (loc != -1){
+        glUniform3f(loc, (GLfloat) v.x, (GLfloat) v.y, (GLfloat) v.z);
+    }
+
+    loc = glGetUniformLocation(program, "camera_forward");
+    if (loc != -1){
+        glUniform3f(loc, (GLfloat) f.x, (GLfloat) f.y, (GLfloat) f.z);
+    }
+}
+
 renderer_t::renderer_t(){
     INSTANCE = this;
-    main_camera = nullptr;
+    main_camera = new camera_t();
+    main_camera->position += glm::vec3(0, 0.5f, 0);
+    main_camera->forward = glm::vec3(0, 0, 1);
     window = nullptr;
+}
+
+renderer_t::~renderer_t(){
+    delete main_camera;
 }
 
 bool
@@ -117,8 +141,6 @@ renderer_t::initialise(GLFWwindow * window){
 
     glfwSetWindowSizeCallback(window, window_size_callback);
 
-    // create ssbo
-    glGenBuffers(1, &octree_ssbo);
     return true;
 }
 
@@ -132,31 +154,4 @@ renderer_t::draw(){
     glUseProgram(program);
     glViewport(0, 0, width, height);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-}
-
-bool
-renderer_t::is_visible(bounds_t bounds){
-    //TODO
-    return true;
-}
-
-bool 
-renderer_t::is_terminal(bounds_t bounds){
-    return bounds.volume() == 1;
-}
-
-void
-renderer_t::upload_octree_data(std::vector<int> * data){
-    data->insert(data->begin(), data->size());
-    
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, octree_ssbo); 
-    glBufferData(
-	GL_SHADER_STORAGE_BUFFER, 
-	sizeof(int) * data->size(), 
-	&(data->at(0)), 
-	GL_DYNAMIC_DRAW
-    );
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, octree_ssbo);
-
-    data->erase(data->begin());
 }

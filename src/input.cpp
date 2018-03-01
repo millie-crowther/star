@@ -74,7 +74,7 @@ input_t::set_window(GLFWwindow * window){
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetCursorPosCallback(window, cursor_pos_callback);
     
-    inputs[window] = this;
+    inputs.emplace(window, this);
 }
 
 void

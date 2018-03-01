@@ -3,12 +3,13 @@
 uniform vec2 window_size;
 uniform vec3 camera_up;
 uniform vec3 camera_right;
-uniform vec3 camera_pos;
+uniform vec3 camera_position;
 
 float f = 1.0;
 float render_distance = 1000.0;
-int max_steps = 128;
-float epsilon = 0.01;
+int max_steps = 64;
+float epsilon = 0.02;
+float shadow_softness = 64;
 
 // data structure for a ray
 struct ray {
@@ -56,9 +57,9 @@ vec3 normal(vec3 p){
 ray advance(ray r){
     //TODO: space warping goes here
     float dist = phi(r.pos);
-    r.dist += dist;
     r.pos += r.dir * dist;
     r.hit = dist <= epsilon;
+    r.dist += dist;
     return r;
 }
 
@@ -69,6 +70,15 @@ ray raycast(ray r){
     return r;
 }
 
+float shadow(vec3 l, vec3 p){
+    ray r = raycast(ray(l, normalize(p - l), 0, false));
+    if (length(r.pos - p) > epsilon * 2){
+        return 0.0;
+    } else {
+        return 1.0;
+    }
+}
+
 ray get_ray(vec2 uv){
     vec3 camera_forward = cross(camera_right, camera_up);
 
@@ -77,8 +87,7 @@ ray get_ray(vec2 uv){
     dir += camera_right * uv.x;
     dir = normalize(dir);
    
-    //TODO: change camera origin
-    return ray(vec3(0, 0.5, 0), dir, 0, false);
+    return ray(camera_position, dir, 0, false);
 }
 
 vec4 colour(vec3 p){
@@ -93,13 +102,22 @@ vec4 light(vec3 p){
     //TODO: 1) blinn-phong lighting
     //      2) more complex lighting
     vec3 pos = vec3(1);
-    vec4 colour = vec4(1);
+    vec4 colour = vec4(5);
     float kd = 0.5;
     float ks = 0.5;
     float shininess = 32;
 
+    // attenuation
+    float dist = length(pos - p);
+    float attenuation = 1.0 / (dist * dist);
+
     //ambient 
     vec4 a = vec4(0.5, 0.5, 0.5, 1.0);
+
+    //shadows
+    ray ry = ray(pos, normalize(p - pos), 0, false);
+    ry = raycast(ry);
+    float shadow = shadow(pos, p);
 
     //diffuse
     vec3 l = normalize(pos - p);
@@ -110,7 +128,7 @@ vec4 light(vec3 p){
     vec3 v = normalize(p);
     vec3 r = reflect(l, n);
     vec4 s = ks * pow(max(dot(r, v), epsilon), shininess) * colour;
-    return a + d + s;
+    return a + (d + s) * attenuation * shadow;
 }
 
 vec4 sky(){

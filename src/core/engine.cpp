@@ -56,6 +56,27 @@ engine_t::update(double delta){
 	glfwSetWindowShouldClose(window, GL_TRUE);
     }
 
+    float dx, dz, theta;
+    if (input.is_key_pressed(GLFW_KEY_A)){
+        dx = -delta;
+    }
+    if (input.is_key_pressed(GLFW_KEY_D)){
+        dx = delta;
+    }
+    if (input.is_key_pressed(GLFW_KEY_W)){
+        dz = delta;
+    }
+    if (input.is_key_pressed(GLFW_KEY_S)){
+        dz = -delta;
+    }
+    if (input.is_key_pressed(GLFW_KEY_O)){
+        theta = -delta;
+    }
+    if (input.is_key_pressed(GLFW_KEY_P)){
+        theta = delta;
+    }
+    renderer.update_camera_transform(dx, dz, theta);
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }

@@ -14,15 +14,13 @@ private:
     GLint program;
     int width;
     int height;
-    GLuint octree_ssbo;
 
     bounds_t get_global_bounds();
 
 public:
-    void upload_octree_data(std::vector<int> * data);
-    
     // constructors and destructors
     renderer_t();
+    ~renderer_t();
 
     // setters
     void set_main_camera(camera_t * camera);
@@ -31,9 +29,7 @@ public:
     bool initialise(GLFWwindow * window);
     void draw();
     void update_window_size(int width, int height);
-
-    bool is_visible(bounds_t bounds);
-    bool is_terminal(bounds_t bounds);
+    void update_camera_transform(float dx, float dz, float theta);
 };
 
 #endif
