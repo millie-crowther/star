@@ -8,7 +8,7 @@ uniform vec3 camera_position;
 float f = 1.0;
 float render_distance = 1000.0;
 int max_steps = 64;
-float epsilon = 0.02;
+float epsilon = 0.005;
 float shadow_softness = 64;
 
 // data structure for a ray
@@ -32,14 +32,32 @@ struct point_light {
     vec4 colour;
 };
 
+float cube(vec3 p, vec3 s){
+    vec3 d = abs(p) - s / 2;
+    return min(max(d.x, max(d.y,d.z)), 0.0) + length(max(d,0.0));
+}
+
+float sphere(vec3 p, float r, vec3 c){
+    return length(p - c) - r;
+}
+
+float plane(vec3 p, vec3 n){
+    return dot(p, n);
+}
+
+float stool(vec3 p){
+    p = vec3(abs(p.x), p.y, abs(p.z));
+    float legs = cube(p - vec3(0.2, 0.25, 0.2), vec3(0.07, 0.5, 0.07)); 
+    float seat = cube(p - vec3(0, 0.5, 0), vec3(0.52, 0.08, 0.52));
+    return min(legs, seat) - 0.01;
+}
+
 // signed distance function
-float phi(vec3 pos){
+float phi(vec3 p){
     //TODO: this is the big boy
-    vec3 centre = vec3(0, 0.6, 3);
-    float radius = 0.5;
-    float sphere = length(pos - centre) - radius;
-    float plane = dot(pos, vec3(0, 1, 0));
-    return min(sphere, plane);
+    float plane = plane(p, vec3(0, 1, 0));
+    float d = stool(p - vec3(0, 0, 3));
+    return min(d, plane);
 }
 
 vec3 normal(vec3 p){
